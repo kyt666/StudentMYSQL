@@ -36,7 +36,7 @@ public class StudentShow1 {
     //删除标签
     private JLabel searchLabel3;
     //删除ID文本框
-    private JTextField textID;
+    private JTextField textDeleteID;
     //表
     JTable table = new JTable();
     //数据库操作类
@@ -56,30 +56,10 @@ public class StudentShow1 {
     //按钮监听类
     Listener l;
 
-    //声明数组用来储存学号和各科成绩
-    int[] Id;
-    String[] Name;
-    int[] Class;
-    int[] Chinese;
-    int[] Math;
-    int[] English;
-
-    int index;
-    //判断是否有重复学生
-    boolean[] bl;
-
 
     public StudentShow1() {
         //初始化监听器
         l = new Listener();
-        Id = new int[ 100 ];
-        Name = new String[ 100 ];
-        Class = new int[ 100 ];
-        Chinese = new int[ 100 ];
-        Math = new int[ 100 ];
-        English = new int[ 100 ];
-        bl = new boolean[ 100 ];
-        index = 0;
         //面板初始化
 
         //设置窗体图标
@@ -203,9 +183,9 @@ public class StudentShow1 {
         //删除面板
         searchLabel3 = new JLabel("请输入需要修改/删除的学生Id");
         searchLabel3.setFont(new Font("宋体", Font.BOLD, 16));
-        textID = new JTextField(8);
+        textDeleteID = new JTextField(8);
         p3.add(searchLabel3);
-        p3.add(textID);
+        p3.add(textDeleteID);
         JComboBox<String> comboBox3 = new JComboBox<>();
         comboBox3.addItem("修改学生信息");
         comboBox3.addItem("删除学生信息");
@@ -444,7 +424,7 @@ public class StudentShow1 {
         }));
 
 
-        //优秀率查询
+        //优秀率查询classes
         Container c5 = new Container();
         JComboBox<String> comboBox2 = new JComboBox<>();
         //JComboBox comboBox1=new JComboBox();
@@ -460,7 +440,8 @@ public class StudentShow1 {
             //取出下拉列表框选中的数据
             String conboBoxStr1 = (String) comboBox2.getSelectedItem();
             if ( conboBoxStr1.equals("语文成绩优秀率") ) {
-                System.out.println("按照学号查询");
+
+                System.out.println("按照优秀查询");
             }
             if ( conboBoxStr1.equals("数学成绩优秀率") ) {
                 System.out.println("按照名字查询");
@@ -511,107 +492,47 @@ public class StudentShow1 {
                 2.添加完毕后，文本框内容消失
                  */
                 if ( !(textId.getText().equals("")) && (!(textName.getText().equals(""))) && (!textClass.getText().equals("")) && !(textChinese.getText().equals("")) && !(textMath.getText().equals("")) && !(textEnglish.getText().equals("")) ) {
-                    String str = textId.getText();
-                    Id[ index ] = Integer.parseInt(str);
-
-                    String str1 = textName.getText();
-                    Name[ index ] = str1;
-
-                    String str2 = textClass.getText();
-                    Class[ index ] = Integer.parseInt(str2);
-
-                    String str3 = textChinese.getText();
-                    Chinese[ index ] = Integer.parseInt(str3);
-
-                    String str4 = textMath.getText();
-                    Math[ index ] = Integer.parseInt(str4);
-
-                    String str5 = textEnglish.getText();
-                    English[ index ] = Integer.parseInt(str5);
-
-
-                    if ( bl[ Id[ index ] ] == true ) {
-                      /*
-                        弹出提示框 ：学生已添加 跳转页面
-
-                       */
-                        JOptionPane.showMessageDialog(null, "学生已存在，请勿重复输入", "输入学生学号提示框", JOptionPane.INFORMATION_MESSAGE);
-                        //清空学生信息文本框
-                        textId.setText(null);
-                        textName.setText(null);
-                        textClass.setText(null);
-                        //清空各科成绩文本框
-                        textChinese.setText(null);
-                        textMath.setText(null);
-                        textEnglish.setText(null);
-                    } else {
-                        index++;
-                        sortMess();
+                    if ( util.CheckStu(Integer.parseInt(textId.getText()))){
+                        String name = textName.getText();
+                        util.insert(Integer.parseInt(textId.getText()),name,Integer.parseInt(textClass.getText()),Double.parseDouble(textChinese.getText()),Double.parseDouble(textMath.getText()),Double.parseDouble(textEnglish.getText()));
+                        //清空文本
+                        textId.setText("");
+                        textName.setText("");
+                        textClass.setText("");
+                        textChinese.setText("");
+                        textMath.setText("");
+                        textEnglish.setText("");
+                    }else {
+                        System.out.println("学生已存在！");
                     }
 
+
+                } else {
+
                 }
-                textId.setText("");
-                textName.setText("");
-                textClass.setText("");
-                textChinese.setText("");
-                textMath.setText("");
-                textEnglish.setText("");
             }
             if ( e.getSource() == b2 ) {
-                System.out.println("撤销添加");
-                if ( index > 0 ) {
-                    index--;
-                    sortMess();
-                    System.out.println(Id[ 1 ]);
-                }
+
+
             }
 
 
             if ( e.getSource() == searchButton ) {
                 System.out.println("确定查询");
                 if ( !(searchText1.getText().equals("")) ) {
-                    //不为空就进行查询
-                    //System.out.println(Arrays.toString(bl));
-                    if ( bl[ Integer.parseInt(searchText1.getText()) ] == false ) {
-                        //如果学生不存在
-                        JOptionPane.showMessageDialog(null, "学生不存在，请重新输入", "输入学生学号提示框", JOptionPane.INFORMATION_MESSAGE);
-                        //清空查询文本框
-                        searchText1.setText(null);
-                        //清空结果文本框
-                        resultText.setText(null);
-                    } else {
-                        for (int i = 0; i < index; i++) {
-                            if ( Id[ i ] == Integer.parseInt(searchText1.getText()) ) {
-                                //如果名字数组中内容与文本框内容相等，则将内容输出到查询文本框中
-                                resultText.setText("学号：" + Id[ i ] + ",姓名：" + Name[ i ] + ",班别：" + Class[ i ] + ",语文：" + Chinese[ i ] + ",数学：" + Math[ i ] + ",英语：" + English[ i ]);
-                                //查询到后终止程序
-                                return;
-                            }
-                        }
-                    }
+
+                } else {
+
                 }
             }
-
-
         }
 
-        //创建一个方法用于将数组内容添加到显示文本框中
-
-        public void sortMess() {
-            if ( !(showGrade.getText().equals("")) ) {
-                //如果文本框有内容就将所有内容清空
-                showGrade.setText("");
-            }
-            //index有多大，就说明有几个值
-            for (int i = 0; i < index; i++) {
-                bl[ Id[ i ] ] = true;
-                String str = "学号：" + Id[ i ] + "\t" + "姓名：" + Name[ i ] + "\t" + "班别：" + Class[ i ] + "\t" + "语文：" + Chinese[ i ] + "\t" + "数学：" + Math[ i ] + "\t" + "英语：" + English[ i ] + "\t";
-                showGrade.append(str + "\n");
-            }
-
-        }
 
     }
 
+    //创建一个方法用于将数组内容添加到显示文本框中
+
 
 }
+
+

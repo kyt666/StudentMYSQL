@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,22 +14,28 @@ public class util {
     Statement statement = null;
     ResultSet resultSet = null;
     List<Stu> stus = new ArrayList();
+
     //添加操作
-    public void insert(int id, int name, int chinese) {
+    public void insert(int id, String name, int classes, double chinese, double math, double english) {
         try {
             connection = jdbcUtils.getConnection();
             statement = connection.createStatement();
-            String sql = "INSERT into stu(id, name, chinese) VALUES (" + id + "," + name + "," + chinese + ")";
+            DecimalFormat df = new DecimalFormat("#.00");
+            double all = Double.parseDouble(df.format(chinese + math + english));
+            double ave = Double.parseDouble(df.format((chinese + math + english) / 3));
+            String sql = "INSERT INTO studentmysql.stu(id, name, classes , chinese , math , english , `all` ,ave) VALUES (  " + id + " ,'" + name + "' , " + classes + " , " + chinese + " , " + math + " ," + english + " ," + all + "," + ave + "  )";
             int i = statement.executeUpdate(sql);
             if ( i > 0 ) {
-                System.out.println("插入成功！");
+                System.out.println("添加成功！");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             jdbcUtils.release(connection, statement, resultSet);
         }
     }
+
     //语文排序展示
     List<Stu> showChinese() {
 
@@ -53,6 +60,7 @@ public class util {
 
         return stus;
     }
+
     //数学排序展示
     List<Stu> showMath() {
 
@@ -77,6 +85,7 @@ public class util {
 
         return stus;
     }
+
     //英语排序展示
     public List<Stu> showEnglish() {
 
@@ -101,6 +110,7 @@ public class util {
 
         return stus;
     }
+
     //总成绩排序
     public List<Stu> showAll() {
 
@@ -125,6 +135,7 @@ public class util {
 
         return stus;
     }
+
     //平均成绩排序展示
     public List<Stu> showAve() {
 
@@ -149,6 +160,7 @@ public class util {
 
         return stus;
     }
+
     //Id排序展示
     List<Stu> showId() {
         try {
@@ -183,7 +195,7 @@ public class util {
         try {
             connection = jdbcUtils.getConnection();
             statement = connection.createStatement();
-            String sql = "delete from stu where id=" + id + "";
+            String sql = "delete from studentmysql.stu where id=" + id + "";
             int i = statement.executeUpdate(sql);
             if ( i > 0 ) {
                 System.out.println("删除成功！");
@@ -195,25 +207,26 @@ public class util {
         }
     }
 
-    void Search(int id) {
+    boolean CheckStu(int id) {
 
         try {
             connection = jdbcUtils.getConnection();
             statement = connection.createStatement();
             String sql = "select * from studentmysql.stu where id=" + id + "";
             resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                System.out.print(resultSet.getString("id"));
-                System.out.print(resultSet.getString("name"));
-                System.out.print(resultSet.getString("chinese"));
-                System.out.println();
+            if ( resultSet.next() ) {
+                return false;
+            }else {
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             jdbcUtils.release(connection, statement, resultSet);
         }
+        return false;
     }
+
 
     void update(int id, int name, int chinese) {
 
