@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -424,52 +425,93 @@ public class StudentShow1 {
         }));
 
 
-        //优秀率查询classes
+        //优秀率查询
         Container c5 = new Container();
         JComboBox<String> comboBox2 = new JComboBox<>();
         //JComboBox comboBox1=new JComboBox();
-        comboBox2.addItem("语文成绩优秀率");
-        comboBox2.addItem("数学成绩优秀率");
-        comboBox2.addItem("英语成绩优秀率");
-        comboBox2.addItem("语文成绩不及格率");
-        comboBox2.addItem("数学成绩不及格率");
-        comboBox2.addItem("英语成绩不及格率");
+
+        comboBox2.addItem("每班语文成绩优秀率高到低");
+        comboBox2.addItem("每班数学成绩优秀率高到低");
+        comboBox2.addItem("每班英语成绩优秀率高到低");
+        comboBox2.addItem("每班语文成绩不及格率高到低");
+        comboBox2.addItem("每班数学成绩不及格率高到低");
+        comboBox2.addItem("每班英语成绩不及格率高到低");
         JButton button1 = new JButton("提交");
+
+        c5.setLayout(new FlowLayout(FlowLayout.LEFT));
+        resultA = new JTextArea(10, 30);
+        //resultA.setBounds(10, 550, 550, 100);
+        p5.add(comboBox2);
+        p5.add(button1);
+        p5.add(c5);
+        p5.add(resultA);
+
         button1.addActionListener((actionEvent -> {
 
             //取出下拉列表框选中的数据
             String conboBoxStr1 = (String) comboBox2.getSelectedItem();
-            if ( conboBoxStr1.equals("语文成绩优秀率") ) {
+            if ( conboBoxStr1.equals("每班语文成绩优秀率高到低") ) {
 
-                System.out.println("按照优秀查询");
+
+                    resultA.setText("");
+                Object[][] objectYouxiuC = new Object[ 0 ][];
+                try {
+                    objectYouxiuC = util.YouxiuC();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                resultA.setEditable(false);
+                    for (int i = 0; i < objectYouxiuC.length; i++) {
+                       resultA.append(objectYouxiuC[i][0]+"班的"+"语文优秀率："+objectYouxiuC[i][1]+"\r\n");
+                    }
+
+
+
+
             }
-            if ( conboBoxStr1.equals("数学成绩优秀率") ) {
-                System.out.println("按照名字查询");
+            if ( conboBoxStr1.equals("每班数学成绩优秀率高到低") ) {
+                resultA.setText("");
+                Object[][] objectYouxiuM = util.YouxiuM();
+                resultA.setEditable(false);
+                for (int i = 0; i < objectYouxiuM.length; i++) {
+                    resultA.append(objectYouxiuM[i][0]+"班的"+"数学优秀率："+ objectYouxiuM[i][1]+"\r\n");
+                }
+
             }
-            if ( conboBoxStr1.equals("英语成绩优秀率") ) {
-                System.out.println("按照班级查询");
+            if ( conboBoxStr1.equals("每班英语成绩优秀率高到低") ) {
+                resultA.setText("");
+                Object[][] objectYouxiuE = util.YouxiuE();
+                resultA.setEditable(false);
+                for (int i = 0; i < objectYouxiuE.length; i++) {
+                    resultA.append(objectYouxiuE[i][0]+"班的"+"英语优秀率："+ objectYouxiuE[i][1]+"\r\n");
+                }
             }
-            if ( conboBoxStr1.equals("语文成绩不及格率") ) {
-                System.out.println("按照课程名称查询");
+            if ( conboBoxStr1.equals("每班语文成绩不及格率高到低") ) {
+                resultA.setText("");
+                Object[][] objectBUjigeC = util.BujigeC();
+                resultA.setEditable(false);
+                for (int i = 0; i < objectBUjigeC.length; i++) {
+                    resultA.append(objectBUjigeC[i][0]+"班的"+"英语不及格率："+ objectBUjigeC[i][1]+"\r\n");
+                }
             }
-            if ( conboBoxStr1.equals("数学成绩不及格率") ) {
-                System.out.println("按照语文成绩最高查询");
+            if ( conboBoxStr1.equals("每班数学成绩不及格率高到低") ) {
+                resultA.setText("");
+                Object[][] objectBUjigeM = util.BujigeM();
+                resultA.setEditable(false);
+                for (int i = 0; i < objectBUjigeM.length; i++) {
+                    resultA.append(objectBUjigeM[i][0]+"班的"+"数学不及格率："+ objectBUjigeM[i][1]+"\r\n");
+                }
             }
-            if ( conboBoxStr1.equals("英语成绩不及格率") ) {
-                System.out.println("按照数学成绩最高查询");
+            if ( conboBoxStr1.equals("每班英语成绩不及格率高到低") ) {
+                resultA.setText("");
+                Object[][] objectBUjigeE = util.BujigeE();
+                resultA.setEditable(false);
+                for (int i = 0; i < objectBUjigeE.length; i++) {
+                    resultA.append(objectBUjigeE[i][0]+"班的"+"英语不及格率："+ objectBUjigeE[i][1]+"\r\n");
+                }
             }
 
         }));
-
-
-        c5.setLayout(new FlowLayout(FlowLayout.LEFT));
-        resultA = new JTextArea(20, 60);
-        resultA.setBounds(10, 550, 500, 200);
-        p5.add(resultA);
-        p5.add(comboBox2);
-        p5.add(button1);
-        p5.add(c5);
-
 
         student.setVisible(true);
 
@@ -492,9 +534,9 @@ public class StudentShow1 {
                 2.添加完毕后，文本框内容消失
                  */
                 if ( !(textId.getText().equals("")) && (!(textName.getText().equals(""))) && (!textClass.getText().equals("")) && !(textChinese.getText().equals("")) && !(textMath.getText().equals("")) && !(textEnglish.getText().equals("")) ) {
-                    if ( util.CheckStu(Integer.parseInt(textId.getText()))){
+                    if ( util.CheckStu(Integer.parseInt(textId.getText())) ) {
                         String name = textName.getText();
-                        util.insert(Integer.parseInt(textId.getText()),name,Integer.parseInt(textClass.getText()),Double.parseDouble(textChinese.getText()),Double.parseDouble(textMath.getText()),Double.parseDouble(textEnglish.getText()));
+                        util.insert(Integer.parseInt(textId.getText()), name, Integer.parseInt(textClass.getText()), Double.parseDouble(textChinese.getText()), Double.parseDouble(textMath.getText()), Double.parseDouble(textEnglish.getText()));
                         //清空文本
                         textId.setText("");
                         textName.setText("");
@@ -502,7 +544,7 @@ public class StudentShow1 {
                         textChinese.setText("");
                         textMath.setText("");
                         textEnglish.setText("");
-                    }else {
+                    } else {
                         System.out.println("学生已存在！");
                     }
 

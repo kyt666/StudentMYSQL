@@ -216,7 +216,7 @@ public class util {
             resultSet = statement.executeQuery(sql);
             if ( resultSet.next() ) {
                 return false;
-            }else {
+            } else {
                 return true;
             }
         } catch (SQLException e) {
@@ -246,5 +246,131 @@ public class util {
         }
     }
 
+    Object[][] YouxiuC() throws SQLException {
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select classes,sum(chinese>=90)/COUNT(*) as YouxiuC  from studentmysql.stu group by classes  order by YouxiuC desc";
+            resultSet = statement.executeQuery(sql);
+            Object[][] objectYouxiuC = new Object[ resultSet.getRow() + 2 ][ 2 ];
+            for (int i = 0; resultSet.next(); i++) {
+                objectYouxiuC[ i ][ 0 ] = resultSet.getInt("classes");
+                objectYouxiuC[ i ][ 1 ] = resultSet.getDouble("YouxiuC");
 
+            }
+            return objectYouxiuC;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection,statement,resultSet);
+        }
+
+        return new Object[0][];
+    }
+
+
+    public Object[][] YouxiuM() {
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select classes,sum(math>=90)/COUNT(*) as YouxiuM  from studentmysql.stu group by classes  order by YouxiuM desc";
+            resultSet = statement.executeQuery(sql);
+            Object[][] objectYouxiuM = new Object[ resultSet.getRow() + 2 ][ 2 ];
+            for (int i = 0; resultSet.next(); i++) {
+                objectYouxiuM[ i ][ 0 ] = resultSet.getInt("classes");
+                objectYouxiuM[ i ][ 1 ] = resultSet.getDouble("YouxiuM");
+
+            }
+            return objectYouxiuM;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection,statement,resultSet);
+        }
+        return new Object[0][];
+    }
+
+    public Object[][] YouxiuE() {
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select classes,sum(english>=90)/COUNT(*) as YouxiuE from studentmysql.stu group by classes  order by YouxiuE desc";
+            resultSet = statement.executeQuery(sql);
+            Object[][] objectYouxiuE = new Object[ resultSet.getRow() + 2 ][ 2 ];
+            for (int i = 0; resultSet.next(); i++) {
+                objectYouxiuE[ i ][ 0 ] = resultSet.getInt("classes");
+                objectYouxiuE[ i ][ 1 ] = resultSet.getDouble("YouxiuE");
+
+            }
+            return objectYouxiuE;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection,statement,resultSet);
+        }
+        return new Object[0][];
+    }
+
+    public Object[][] BujigeC() {
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select classes,sum(chinese<60)/COUNT(*) as BujigeC  from studentmysql.stu group by classes  order by BujigeC desc";
+            resultSet = statement.executeQuery(sql);
+            Object[][] objectBujigeC = new Object[ resultSet.getRow() + 2 ][ 2 ];
+            for (int i = 0; resultSet.next(); i++) {
+                objectBujigeC[ i ][ 0 ] = resultSet.getInt("classes");
+                objectBujigeC[ i ][ 1 ] = resultSet.getDouble("BujigeC");
+
+            }
+            return objectBujigeC;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection,statement,resultSet);
+        }
+        return new Object[0][];
+    }
+
+    public Object[][] BujigeM() {
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select classes,sum(math<60)/COUNT(*) as BujigeM  from studentmysql.stu group by classes  order by BujigeM desc";
+            resultSet = statement.executeQuery(sql);
+            Object[][] objectBujigeM = new Object[ resultSet.getRow() + 2 ][ 2 ];
+            for (int i = 0; resultSet.next(); i++) {
+                objectBujigeM[ i ][ 0 ] = resultSet.getInt("classes");
+                objectBujigeM[ i ][ 1 ] = resultSet.getDouble("BujigeM");
+
+            }
+            return objectBujigeM;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection,statement,resultSet);
+        }
+        return new Object[0][];
+    }
+
+    public Object[][] BujigeE() {
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select classes,sum(english<60)/COUNT(*) as BujigeE  from studentmysql.stu group by classes  order by BujigeE desc";
+            resultSet = statement.executeQuery(sql);
+            Object[][] objectBujigeE = new Object[ resultSet.getRow() + 2 ][ 2 ];
+            for (int i = 0; resultSet.next(); i++) {
+                objectBujigeE[ i ][ 0 ] = resultSet.getInt("classes");
+                objectBujigeE[ i ][ 1 ] = resultSet.getDouble("BujigeE");
+
+            }
+            return objectBujigeE;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection,statement,resultSet);
+        }
+        return new Object[0][];
+    }
 }
