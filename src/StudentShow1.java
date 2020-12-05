@@ -1,12 +1,8 @@
-import student.Stu;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.List;
 
 
 public class StudentShow1 {
@@ -26,20 +22,21 @@ public class StudentShow1 {
     //容器：一个添加面板 一个储存面板
     private Container container;
     //添加按钮 撤销添加按钮
-    private JButton b1, b2, b3, b4, b5, b6, b7, b8, b9;
+    private JButton b1, b2, b3, b4, b5, b6, b7, b8;
     //标签：姓名 语文成绩 数学成绩 英语成绩
     private JLabel IdLabel, NameLabel, ClassLabel, ChineseLabel, MathLabel, EnglishLabel;
     //姓名 成绩文本框
     private JTextField textId, textName, textClass, textChinese, textMath, textEnglish;
+    //修改的标签和文本
+    private JLabel DNameLabel, DClassLabel, DChineseLabel, DMathLabel, DEnglishLabel;
+    private JTextField DtextName, DtextClass, DtextChinese, DtextMath, DtextEnglish;
     //显示学生信息内容的文本框
-    private JTextArea showGrade, showStudent;
+    private JTextArea showInsert, showStudent;
     //删除面板内容
     //删除标签
     private JLabel searchLabel3;
     //删除ID文本框
     private JTextField textDeleteID;
-    //表
-    JTable table = new JTable();
     //数据库操作类
     util util = new util();
 
@@ -94,13 +91,25 @@ public class StudentShow1 {
         textChinese = new JTextField(10);
         textMath = new JTextField(10);
         textEnglish = new JTextField(10);
+        //初始化5个修改标签 修改文本
+        DNameLabel = new JLabel("姓名");
+        DClassLabel = new JLabel("班别");
+        DChineseLabel = new JLabel("语文");
+        DMathLabel = new JLabel("数学");
+        DEnglishLabel = new JLabel("英语");
+
+        DtextName = new JTextField(10);
+        DtextClass = new JTextField(10);
+        DtextChinese = new JTextField(10);
+        DtextMath = new JTextField(10);
+        DtextEnglish = new JTextField(10);
         //两个按钮
         b1 = new JButton("确认添加");
-        b2 = new JButton("撤销添加");
+        b2 = new JButton("查看添加");
 
         //显示文本框
-        showGrade = new JTextArea(20, 60);
-        showGrade.setBounds(10, 550, 500, 200);
+        showInsert = new JTextArea(20, 65);
+        showInsert.setBounds(10, 550, 500, 200);
 
         //设置面板属性
         student.setSize(1000, 600);
@@ -164,8 +173,8 @@ public class StudentShow1 {
 
         p1.add(c1, BorderLayout.WEST);
         p1.add(c1);
-        p1.add(showGrade);
-        JScrollPane jp = new JScrollPane(showGrade);
+        p1.add(showInsert);
+        JScrollPane jp = new JScrollPane(showInsert);
         p1.add(jp);
 
         //按钮添加：
@@ -182,25 +191,76 @@ public class StudentShow1 {
 
 
         //删除面板
-        searchLabel3 = new JLabel("请输入需要修改/删除的学生Id");
+        searchLabel3 = new JLabel("请输入需要修改/删除的学生学号");
         searchLabel3.setFont(new Font("宋体", Font.BOLD, 16));
         textDeleteID = new JTextField(8);
+        //修改文本
+        Container c3 = new Container();
+        c3.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+
+        c3.add(DNameLabel);
+        c3.add(DtextName);
+
+        c3.add(DClassLabel);
+        c3.add(DtextClass);
+
+        c3.add(DChineseLabel);
+        c3.add(DtextChinese);
+
+        c3.add(DMathLabel);
+        c3.add(DtextMath);
+
+        c3.add(DEnglishLabel);
+        c3.add(DtextEnglish);
+
         p3.add(searchLabel3);
         p3.add(textDeleteID);
+        p3.add(c3);
         JComboBox<String> comboBox3 = new JComboBox<>();
         comboBox3.addItem("修改学生信息");
         comboBox3.addItem("删除学生信息");
         JButton button3 = new JButton("确认");
-
         button3.addActionListener((actionEvent -> {
 
             //取出下拉列表框选中的数据
             String conboBoxStr3 = (String) comboBox3.getSelectedItem();
             if ( conboBoxStr3.equals("修改学生信息") ) {
-                System.out.println("修改");
+                if ( !textDeleteID.getText().equals("") ) {
+                    if ( !util.CheckStu(Integer.parseInt(textDeleteID.getText())) ) {
+                        if ( (!(DtextName.getText().equals(""))) && (!DtextClass.getText().equals("")) && !(DtextChinese.getText().equals("")) && !(DtextMath.getText().equals("")) && !(DtextEnglish.getText().equals("")) ) {
+                            String name = DtextName.getText();
+                            util.update(Integer.parseInt(textDeleteID.getText()), name, Integer.parseInt(DtextClass.getText()), Double.parseDouble(DtextChinese.getText()), Double.parseDouble(DtextMath.getText()), Double.parseDouble(DtextEnglish.getText()));
+                            //清空修改文本
+                            DtextName.setText("");
+                            DtextClass.setText("");
+                            DtextChinese.setText("");
+                            DtextMath.setText("");
+                            DtextEnglish.setText("");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
+                        }
+                        JOptionPane.showMessageDialog(null, "修改成功!", "提示框", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "学生不存在无法修改!", "提示框", JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
+                }
             }
             if ( conboBoxStr3.equals("删除学生信息") ) {
-                System.out.println("删除");
+                if ( !textDeleteID.getText().equals("") ) {
+                    if ( !util.CheckStu(Integer.parseInt(textDeleteID.getText())) ) {
+                        util.Delete(Integer.parseInt(textDeleteID.getText()));
+                        JOptionPane.showMessageDialog(null, "删除成功!", "提示框", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "学生不存在或以删除!", "提示框", JOptionPane.WARNING_MESSAGE);
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
+
+                }
             }
         }));
 
@@ -224,10 +284,6 @@ public class StudentShow1 {
         comboBox1.addItem("按照数学成绩最高查询");
         comboBox1.addItem("按照英语成绩最高查询");
         JButton button = new JButton("提交");
-
-        // 表头（列名）
-        Object[] columnNames = {"id", "姓名", "班级", "语文", "数学", "英语", "总成绩", "平均成绩"};
-
 
         button.addActionListener((actionEvent -> {
 
@@ -269,20 +325,20 @@ public class StudentShow1 {
         //resultText.setBounds(10,550,500,200);
 
         //查询面板布局
-        Container c3 = new Container();
+        Container c4 = new Container();
         //c3.setLayout(new FlowLayout());
         // c3.setLayout(new FlowLayout(FlowLayout.LEFT));
         // c3.add(searchLabel1);
         p2.add(comboBox1);
         p2.add(button);
-        p2.add(c3, FlowLayout.LEFT);
+        p2.add(c4, FlowLayout.LEFT);
         // p2.add(resultText);
         //searchButton.addActionListener(l);
 
 
         //排序面板
-        Container c4 = new Container();
-        c4.setLayout(new FlowLayout(FlowLayout.LEFT));
+        Container c5 = new Container();
+        c5.setLayout(new FlowLayout(FlowLayout.LEFT));
         b3 = new JButton("学号排序");
         b4 = new JButton("语文成绩排名");
         b5 = new JButton("数学成绩排名");
@@ -290,143 +346,86 @@ public class StudentShow1 {
         b7 = new JButton("总成绩排名");
         b8 = new JButton("平均成绩排名");
 
-        c4.add(b3);
-        c4.add(b4);
-        c4.add(b5);
-        c4.add(b6);
-        c4.add(b7);
-        c4.add(b8);
-        p4.add(c4);
+        c5.add(b3);
+        c5.add(b4);
+        c5.add(b5);
+        c5.add(b6);
+        c5.add(b7);
+        c5.add(b8);
+        p4.add(c5);
         //Id排序展示
+        //显示文本框
+        showStudent = new JTextArea(20, 65);
+        showStudent.setEditable(false);
+        p4.add(showStudent);
+        JScrollPane jp1 = new JScrollPane(showStudent);
+        p4.add(jp1);
         b3.addActionListener((ActionEvent -> {
-            List<Stu> stus = util.showId();
-            DefaultTableModel tableModel = new DefaultTableModel();
-            Object[] columnId = {"id", "姓名", "班级", "语文", "数学", "英语", "总成绩", "平均成绩"};
-            Object[][] objects = new Object[ stus.size() ][ 8 ];
-            for (int i = 0; i < stus.size(); i++) {
-                objects[ i ][ 0 ] = stus.get(i).getId();
-                objects[ i ][ 1 ] = stus.get(i).getName();
-                objects[ i ][ 2 ] = stus.get(i).getClasses();
-                objects[ i ][ 3 ] = stus.get(i).getChinese();
-                objects[ i ][ 4 ] = stus.get(i).getMath();
-                objects[ i ][ 5 ] = stus.get(i).getEnglish();
-                objects[ i ][ 6 ] = stus.get(i).getAll();
-                objects[ i ][ 7 ] = stus.get(i).getAve();
+            Object[][] showid = util.showId();
+            showStudent.setText("");
+            showStudent.append("学号\t姓名\t班级\t语文\t数学\t英语\t总成绩\t平均成绩\n");
+            for (int i = 0; i < showid.length; i++) {
+                if ( showid[ i ][ 0 ] != null )
+                    showStudent.append(showid[ i ][ 0 ] + "\t" + showid[ i ][ 1 ] + "\t" + showid[ i ][ 2 ] + "\t" + showid[ i ][ 3 ] + "\t" + showid[ i ][ 4 ] + "\t" + showid[ i ][ 5 ] + "\t" + showid[ i ][ 6 ] + "\t" + showid[ i ][ 7 ] + "\n");
             }
-            // 把 表头 添加到容器顶部（使用普通的中间容器添加表格时，表头 和 内容 需要分开添加）
-            p4.add(table.getTableHeader(), BorderLayout.CENTER);
-            p4.add(table, BorderLayout.CENTER);// 把 表格内容 添加到容器中心
-            tableModel.setDataVector(objects, columnId);
-            table.setModel(tableModel);
-            JScrollPane scrollPane = new JScrollPane(table);
-            p4.add(scrollPane, BorderLayout.CENTER);
+
+
         }));
 
         //语文排序展示
         b4.addActionListener((ActionEvent -> {
-            List<Stu> stus = util.showChinese();
-            DefaultTableModel tableModel = new DefaultTableModel();
-            Object[] columnChinese = {"id", "姓名", "班级", "语文"};
-            Object[][] objectChinese = new Object[ stus.size() ][ 4 ];
-            for (int i = 0; i < stus.size(); i++) {
-                objectChinese[ i ][ 0 ] = stus.get(i).getId();
-                objectChinese[ i ][ 1 ] = stus.get(i).getName();
-                objectChinese[ i ][ 2 ] = stus.get(i).getClasses();
-                objectChinese[ i ][ 3 ] = stus.get(i).getChinese();
+            Object[][] showid = util.showChinese();
+            showStudent.setText("");
+            showStudent.append("学号\t\t姓名\t\t班级\t\t语文\n");
+            for (int i = 0; i < showid.length; i++) {
+                if ( showid[ i ][ 0 ] != null )
+                    showStudent.append(showid[ i ][ 0 ] + "\t\t" + showid[ i ][ 1 ] + "\t\t" + showid[ i ][ 2 ] + "\t\t" + showid[ i ][ 3 ] + "\n");
             }
-            tableModel.setDataVector(objectChinese, columnChinese);
-            // 把 表头 添加到容器顶部（使用普通的中间容器添加表格时，表头 和 内容 需要分开添加）
-            p4.add(table.getTableHeader(), BorderLayout.CENTER);
-            p4.add(table, BorderLayout.CENTER);// 把 表格内容 添加到容器中心
-            table.setModel(tableModel);
-            JScrollPane scrollPane = new JScrollPane(table);
-            p4.add(scrollPane, BorderLayout.CENTER);
         }));
         //数学排序展示
         b5.addActionListener((ActionEvent -> {
-            List<Stu> stus = util.showMath();
-            DefaultTableModel tableModel = new DefaultTableModel();
-            Object[] columnMath = {"id", "姓名", "班级", "数学"};
-            Object[][] objectMath = new Object[ stus.size() ][ 4 ];
-            for (int i = 0; i < stus.size(); i++) {
-                objectMath[ i ][ 0 ] = stus.get(i).getId();
-                objectMath[ i ][ 1 ] = stus.get(i).getName();
-                objectMath[ i ][ 2 ] = stus.get(i).getClasses();
-                objectMath[ i ][ 3 ] = stus.get(i).getMath();
+            Object[][] showM = util.showMath();
+            showStudent.setText("");
+            showStudent.append("学号\t\t姓名\t\t班级\t\t数学\n");
+            for (int i = 0; i < showM.length; i++) {
+                if ( showM[ i ][ 0 ] != null )
+                    showStudent.append(showM[ i ][ 0 ] + "\t\t" + showM[ i ][ 1 ] + "\t\t" + showM[ i ][ 2 ] + "\t\t" + showM[ i ][ 3 ] + "\n");
             }
-            tableModel.setDataVector(objectMath, columnMath);
-            // 把 表头 添加到容器顶部（使用普通的中间容器添加表格时，表头 和 内容 需要分开添加）
-            p4.add(table.getTableHeader(), BorderLayout.CENTER);
-            p4.add(table, BorderLayout.CENTER);// 把 表格内容 添加到容器中心
-            table.setModel(tableModel);
-            JScrollPane scrollPane = new JScrollPane(table);
-            p4.add(scrollPane, BorderLayout.CENTER);
         }));
         //英语排序展示
         b6.addActionListener((ActionEvent -> {
-            List<Stu> stus = util.showEnglish();
-            DefaultTableModel tableModel = new DefaultTableModel();
-            Object[] columnEnglish = {"id", "姓名", "班级", "英语"};
-            Object[][] objectEnglish = new Object[ stus.size() ][ 4 ];
-            for (int i = 0; i < stus.size(); i++) {
-                objectEnglish[ i ][ 0 ] = stus.get(i).getId();
-                objectEnglish[ i ][ 1 ] = stus.get(i).getName();
-                objectEnglish[ i ][ 2 ] = stus.get(i).getClasses();
-                objectEnglish[ i ][ 3 ] = stus.get(i).getEnglish();
+            Object[][] showE = util.showEnglish();
+            showStudent.setText("");
+            showStudent.append("学号\t\t姓名\t\t班级\t\t英语\n");
+            for (int i = 0; i < showE.length; i++) {
+                if ( showE[ i ][ 0 ] != null )
+                    showStudent.append(showE[ i ][ 0 ] + "\t\t" + showE[ i ][ 1 ] + "\t\t" + showE[ i ][ 2 ] + "\t\t" + showE[ i ][ 3 ] + "\n");
             }
-            tableModel.setDataVector(objectEnglish, columnEnglish);
-            // 把 表头 添加到容器顶部（使用普通的中间容器添加表格时，表头 和 内容 需要分开添加）
-            p4.add(table.getTableHeader(), BorderLayout.CENTER);
-            p4.add(table, BorderLayout.CENTER);// 把 表格内容 添加到容器中心
-            table.setModel(tableModel);
-            JScrollPane scrollPane = new JScrollPane(table);
-            p4.add(scrollPane, BorderLayout.CENTER);
-            table.setEnabled(false);
         }));
         //总成绩排序展示
         b7.addActionListener((ActionEvent -> {
-            List<Stu> stus = util.showAll();
-            DefaultTableModel tableModel = new DefaultTableModel();
-            Object[] columnAll = {"id", "姓名", "班级", "总成绩"};
-            Object[][] objectAll = new Object[ stus.size() ][ 4 ];
-            for (int i = 0; i < stus.size(); i++) {
-                objectAll[ i ][ 0 ] = stus.get(i).getId();
-                objectAll[ i ][ 1 ] = stus.get(i).getName();
-                objectAll[ i ][ 2 ] = stus.get(i).getClasses();
-                objectAll[ i ][ 3 ] = stus.get(i).getAll();
+            Object[][] showAll = util.showAll();
+            showStudent.setText("");
+            showStudent.append("学号\t\t姓名\t\t班级\t\t总成绩\n");
+            for (int i = 0; i < showAll.length; i++) {
+                if ( showAll[ i ][ 0 ] != null )
+                    showStudent.append(showAll[ i ][ 0 ] + "\t\t" + showAll[ i ][ 1 ] + "\t\t" + showAll[ i ][ 2 ] + "\t\t" + showAll[ i ][ 3 ] + "\n");
             }
-            tableModel.setDataVector(objectAll, columnAll);
-            // 把 表头 添加到容器顶部（使用普通的中间容器添加表格时，表头 和 内容 需要分开添加）
-            p4.add(table.getTableHeader(), BorderLayout.CENTER);
-            p4.add(table, BorderLayout.CENTER);// 把 表格内容 添加到容器中心
-            table.setModel(tableModel);
-            JScrollPane scrollPane = new JScrollPane(table);
-            p4.add(scrollPane, BorderLayout.CENTER);
         }));
         //平均成绩排序展示
         b8.addActionListener((ActionEvent -> {
-            List<Stu> stus = util.showAve();
-            DefaultTableModel tableModel = new DefaultTableModel();
-            Object[] columnAve = {"id", "姓名", "班级", "平均成绩"};
-            Object[][] objectAve = new Object[ stus.size() ][ 4 ];
-            for (int i = 0; i < stus.size(); i++) {
-                objectAve[ i ][ 0 ] = stus.get(i).getId();
-                objectAve[ i ][ 1 ] = stus.get(i).getName();
-                objectAve[ i ][ 2 ] = stus.get(i).getClasses();
-                objectAve[ i ][ 3 ] = stus.get(i).getAve();
+            Object[][] showAve = util.showAve();
+            showStudent.setText("");
+            showStudent.append("学号\t\t姓名\t\t班级\t\t平均成绩\n");
+            for (int i = 0; i < showAve.length; i++) {
+                if ( showAve[ i ][ 0 ] != null )
+                    showStudent.append(showAve[ i ][ 0 ] + "\t\t" + showAve[ i ][ 1 ] + "\t\t" + showAve[ i ][ 2 ] + "\t\t" + showAve[ i ][ 3 ] + "\n");
             }
-            tableModel.setDataVector(objectAve, columnAve);
-            // 把 表头 添加到容器顶部（使用普通的中间容器添加表格时，表头 和 内容 需要分开添加）
-            p4.add(table.getTableHeader(), BorderLayout.CENTER);
-            p4.add(table, BorderLayout.CENTER);// 把 表格内容 添加到容器中心
-            table.setModel(tableModel);
-            JScrollPane scrollPane = new JScrollPane(table);
-            p4.add(scrollPane, BorderLayout.CENTER);
         }));
 
 
         //优秀率查询
-        Container c5 = new Container();
+        Container c6 = new Container();
         JComboBox<String> comboBox2 = new JComboBox<>();
         //JComboBox comboBox1=new JComboBox();
 
@@ -438,12 +437,12 @@ public class StudentShow1 {
         comboBox2.addItem("每班英语成绩不及格率高到低");
         JButton button1 = new JButton("提交");
 
-        c5.setLayout(new FlowLayout(FlowLayout.LEFT));
+        c6.setLayout(new FlowLayout(FlowLayout.LEFT));
         resultA = new JTextArea(10, 30);
         //resultA.setBounds(10, 550, 550, 100);
         p5.add(comboBox2);
         p5.add(button1);
-        p5.add(c5);
+        p5.add(c6);
         p5.add(resultA);
 
         button1.addActionListener((actionEvent -> {
@@ -453,7 +452,7 @@ public class StudentShow1 {
             if ( conboBoxStr1.equals("每班语文成绩优秀率高到低") ) {
 
 
-                    resultA.setText("");
+                resultA.setText("");
                 Object[][] objectYouxiuC = new Object[ 0 ][];
                 try {
                     objectYouxiuC = util.YouxiuC();
@@ -461,11 +460,9 @@ public class StudentShow1 {
                     e.printStackTrace();
                 }
                 resultA.setEditable(false);
-                    for (int i = 0; i < objectYouxiuC.length; i++) {
-                       resultA.append(objectYouxiuC[i][0]+"班的"+"语文优秀率："+objectYouxiuC[i][1]+"\r\n");
-                    }
-
-
+                for (int i = 0; i < objectYouxiuC.length; i++) {
+                    resultA.append(objectYouxiuC[ i ][ 0 ] + "班的" + "语文优秀率：" + objectYouxiuC[ i ][ 1 ] + "\r\n");
+                }
 
 
             }
@@ -474,7 +471,7 @@ public class StudentShow1 {
                 Object[][] objectYouxiuM = util.YouxiuM();
                 resultA.setEditable(false);
                 for (int i = 0; i < objectYouxiuM.length; i++) {
-                    resultA.append(objectYouxiuM[i][0]+"班的"+"数学优秀率："+ objectYouxiuM[i][1]+"\r\n");
+                    resultA.append(objectYouxiuM[ i ][ 0 ] + "班的" + "数学优秀率：" + objectYouxiuM[ i ][ 1 ] + "\r\n");
                 }
 
             }
@@ -483,7 +480,7 @@ public class StudentShow1 {
                 Object[][] objectYouxiuE = util.YouxiuE();
                 resultA.setEditable(false);
                 for (int i = 0; i < objectYouxiuE.length; i++) {
-                    resultA.append(objectYouxiuE[i][0]+"班的"+"英语优秀率："+ objectYouxiuE[i][1]+"\r\n");
+                    resultA.append(objectYouxiuE[ i ][ 0 ] + "班的" + "英语优秀率：" + objectYouxiuE[ i ][ 1 ] + "\r\n");
                 }
             }
             if ( conboBoxStr1.equals("每班语文成绩不及格率高到低") ) {
@@ -491,7 +488,7 @@ public class StudentShow1 {
                 Object[][] objectBUjigeC = util.BujigeC();
                 resultA.setEditable(false);
                 for (int i = 0; i < objectBUjigeC.length; i++) {
-                    resultA.append(objectBUjigeC[i][0]+"班的"+"英语不及格率："+ objectBUjigeC[i][1]+"\r\n");
+                    resultA.append(objectBUjigeC[ i ][ 0 ] + "班的" + "英语不及格率：" + objectBUjigeC[ i ][ 1 ] + "\r\n");
                 }
             }
             if ( conboBoxStr1.equals("每班数学成绩不及格率高到低") ) {
@@ -499,7 +496,7 @@ public class StudentShow1 {
                 Object[][] objectBUjigeM = util.BujigeM();
                 resultA.setEditable(false);
                 for (int i = 0; i < objectBUjigeM.length; i++) {
-                    resultA.append(objectBUjigeM[i][0]+"班的"+"数学不及格率："+ objectBUjigeM[i][1]+"\r\n");
+                    resultA.append(objectBUjigeM[ i ][ 0 ] + "班的" + "数学不及格率：" + objectBUjigeM[ i ][ 1 ] + "\r\n");
                 }
             }
             if ( conboBoxStr1.equals("每班英语成绩不及格率高到低") ) {
@@ -507,15 +504,12 @@ public class StudentShow1 {
                 Object[][] objectBUjigeE = util.BujigeE();
                 resultA.setEditable(false);
                 for (int i = 0; i < objectBUjigeE.length; i++) {
-                    resultA.append(objectBUjigeE[i][0]+"班的"+"英语不及格率："+ objectBUjigeE[i][1]+"\r\n");
+                    resultA.append(objectBUjigeE[ i ][ 0 ] + "班的" + "英语不及格率：" + objectBUjigeE[ i ][ 1 ] + "\r\n");
                 }
             }
 
         }));
-
         student.setVisible(true);
-
-
     }
 
     //监听事件
@@ -526,7 +520,6 @@ public class StudentShow1 {
             //ActionEvent e--指代的是按下的那个按钮
             //e.getSource():获取按下的按钮
             if ( e.getSource() == b1 ) {
-                System.out.println("确认添加");
                 /*
 
                 1.获取文本框内容--显示内容的文本框
@@ -536,28 +529,41 @@ public class StudentShow1 {
                 if ( !(textId.getText().equals("")) && (!(textName.getText().equals(""))) && (!textClass.getText().equals("")) && !(textChinese.getText().equals("")) && !(textMath.getText().equals("")) && !(textEnglish.getText().equals("")) ) {
                     if ( util.CheckStu(Integer.parseInt(textId.getText())) ) {
                         String name = textName.getText();
-                        util.insert(Integer.parseInt(textId.getText()), name, Integer.parseInt(textClass.getText()), Double.parseDouble(textChinese.getText()), Double.parseDouble(textMath.getText()), Double.parseDouble(textEnglish.getText()));
-                        //清空文本
-                        textId.setText("");
-                        textName.setText("");
-                        textClass.setText("");
-                        textChinese.setText("");
-                        textMath.setText("");
-                        textEnglish.setText("");
+                        if ( util.insert(Integer.parseInt(textId.getText()), name, Integer.parseInt(textClass.getText()), Double.parseDouble(textChinese.getText()), Double.parseDouble(textMath.getText()), Double.parseDouble(textEnglish.getText())) ) {
+                            //清空文本
+                            textId.setText("");
+                            textName.setText("");
+                            textClass.setText("");
+                            textChinese.setText("");
+                            textMath.setText("");
+                            textEnglish.setText("");
+                            JOptionPane.showMessageDialog(null, "添加成功!", "提示框", JOptionPane.WARNING_MESSAGE);
+
+                        }
+
                     } else {
-                        System.out.println("学生已存在！");
+                        JOptionPane.showMessageDialog(null, "学生已存在!", "提示框", JOptionPane.WARNING_MESSAGE);
+
                     }
 
 
                 } else {
+                    JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
+
 
                 }
             }
             if ( e.getSource() == b2 ) {
-
+                Object[][] showid = util.showId();
+                showInsert.setText("");
+                showInsert.setEditable(false);
+                showInsert.append("学号\t姓名\t班级\t语文\t数学\t英语\t总成绩\t平均成绩\n");
+                for (int i = 0; i < showid.length; i++) {
+                    if ( showid[ i ][ 0 ] != null )
+                        showInsert.append(showid[ i ][ 0 ] + "\t" + showid[ i ][ 1 ] + "\t" + showid[ i ][ 2 ] + "\t" + showid[ i ][ 3 ] + "\t" + showid[ i ][ 4 ] + "\t" + showid[ i ][ 5 ] + "\t" + showid[ i ][ 6 ] + "\t" + showid[ i ][ 7 ] + "\n");
+                }
 
             }
-
 
             if ( e.getSource() == searchButton ) {
                 System.out.println("确定查询");
