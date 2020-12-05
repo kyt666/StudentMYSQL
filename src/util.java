@@ -234,7 +234,7 @@ public class util {
     }
 
 
-    void update(int id, String name, int classes,double chinese,double math,double english) {
+    boolean update(int id, String name, int classes,double chinese,double math,double english) {
 
         try {
             connection = jdbcUtils.getConnection();
@@ -245,7 +245,9 @@ public class util {
             String sql = "UPDATE studentmysql.stu set name='" + name + "',classes="+classes+",chinese=" + chinese + ",math="+math+",english="+english+",`all`="+all+",ave="+ave+" where id=" + id + "";
             int i = statement.executeUpdate(sql);
             if ( i > 0 ) {
-                System.out.println("修改成功");
+               return true;
+            }else {
+                return false;
             }
 
         } catch (SQLException e) {
@@ -253,6 +255,7 @@ public class util {
         } finally {
             jdbcUtils.release(connection, statement, resultSet);
         }
+        return false;
     }
 
     Object[][] YouxiuC() throws SQLException {

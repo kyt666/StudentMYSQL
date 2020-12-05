@@ -230,17 +230,20 @@ public class StudentShow1 {
                     if ( !util.CheckStu(Integer.parseInt(textDeleteID.getText())) ) {
                         if ( (!(DtextName.getText().equals(""))) && (!DtextClass.getText().equals("")) && !(DtextChinese.getText().equals("")) && !(DtextMath.getText().equals("")) && !(DtextEnglish.getText().equals("")) ) {
                             String name = DtextName.getText();
-                            util.update(Integer.parseInt(textDeleteID.getText()), name, Integer.parseInt(DtextClass.getText()), Double.parseDouble(DtextChinese.getText()), Double.parseDouble(DtextMath.getText()), Double.parseDouble(DtextEnglish.getText()));
-                            //清空修改文本
-                            DtextName.setText("");
-                            DtextClass.setText("");
-                            DtextChinese.setText("");
-                            DtextMath.setText("");
-                            DtextEnglish.setText("");
+                            if ( util.update(Integer.parseInt(textDeleteID.getText()), name, Integer.parseInt(DtextClass.getText()), Double.parseDouble(DtextChinese.getText()), Double.parseDouble(DtextMath.getText()), Double.parseDouble(DtextEnglish.getText()))){
+                                JOptionPane.showMessageDialog(null, "修改成功!", "提示框", JOptionPane.WARNING_MESSAGE);
+                                //清空修改文本
+                                DtextName.setText("");
+                                DtextClass.setText("");
+                                DtextChinese.setText("");
+                                DtextMath.setText("");
+                                DtextEnglish.setText("");
+                            }
+
                         } else {
                             JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
                         }
-                        JOptionPane.showMessageDialog(null, "修改成功!", "提示框", JOptionPane.WARNING_MESSAGE);
+
                     } else {
                         JOptionPane.showMessageDialog(null, "学生不存在无法修改!", "提示框", JOptionPane.WARNING_MESSAGE);
                     }
