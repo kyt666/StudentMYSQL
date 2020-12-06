@@ -258,7 +258,7 @@ public class util {
         return false;
     }
 
-    Object[][] YouxiuC() throws SQLException {
+    Object[][] YouxiuC()  {
         try {
             connection = jdbcUtils.getConnection();
             statement = connection.createStatement();
@@ -378,6 +378,156 @@ public class util {
 
             }
             return objectBujigeE;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection, statement, resultSet);
+        }
+        return new Object[ 0 ][];
+    }
+    //按id查询
+    Object[][] SearchId(int id) {
+
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select * from studentmysql.stu where id like " + id + "";
+            resultSet = statement.executeQuery(sql);
+            Object[][] SearchId = new Object[ 100 ][ 8 ];
+            for (int i = 0; resultSet.next(); i++) {
+                SearchId[ i ][ 0 ] = resultSet.getInt("id");
+                SearchId[ i ][ 1 ] = resultSet.getString("name");
+                SearchId[ i ][ 2 ] = resultSet.getInt("classes");
+                SearchId[ i ][ 3 ] = resultSet.getDouble("chinese");
+                SearchId[ i ][ 4 ] = resultSet.getDouble("math");
+                SearchId[ i ][ 5 ] = resultSet.getDouble("english");
+                SearchId[ i ][ 6 ] = resultSet.getDouble("all");
+                SearchId[ i ][ 7 ] = resultSet.getDouble("ave");
+            }
+            return SearchId;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection, statement, resultSet);
+        }
+        return new Object[ 0 ][];
+    }
+    //按名字查询
+    Object[][] SearchName(String name) {
+
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select * from studentmysql.stu where name like '" + name + "'";
+            resultSet = statement.executeQuery(sql);
+            Object[][] SearchName = new Object[ 100 ][ 8 ];
+            for (int i = 0; resultSet.next(); i++) {
+                SearchName[ i ][ 0 ] = resultSet.getInt("id");
+                SearchName[ i ][ 1 ] = resultSet.getString("name");
+                SearchName[ i ][ 2 ] = resultSet.getInt("classes");
+                SearchName[ i ][ 3 ] = resultSet.getDouble("chinese");
+                SearchName[ i ][ 4 ] = resultSet.getDouble("math");
+                SearchName[ i ][ 5 ] = resultSet.getDouble("english");
+                SearchName[ i ][ 6 ] = resultSet.getDouble("all");
+                SearchName[ i ][ 7 ] = resultSet.getDouble("ave");
+            }
+            return SearchName;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection, statement, resultSet);
+        }
+        return new Object[ 0 ][];
+    }
+    //按班级查询
+    Object[][] SearchClass(int classes) {
+
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select * from studentmysql.stu where classes like " + classes + "";
+            resultSet = statement.executeQuery(sql);
+            Object[][] SearchClass = new Object[ 100 ][ 8 ];
+            for (int i = 0; resultSet.next(); i++) {
+                SearchClass[ i ][ 0 ] = resultSet.getInt("id");
+                SearchClass[ i ][ 1 ] = resultSet.getString("name");
+                SearchClass[ i ][ 2 ] = resultSet.getInt("classes");
+                SearchClass[ i ][ 3 ] = resultSet.getDouble("chinese");
+                SearchClass[ i ][ 4 ] = resultSet.getDouble("math");
+                SearchClass[ i ][ 5 ] = resultSet.getDouble("english");
+                SearchClass[ i ][ 6 ] = resultSet.getDouble("all");
+                SearchClass[ i ][ 7 ] = resultSet.getDouble("ave");
+            }
+            return SearchClass;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection, statement, resultSet);
+        }
+        return new Object[ 0 ][];
+    }
+    //按语文最高查询
+    Object[][] SearchChineseMax() {
+
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select * from studentmysql.stu where chinese = (select max(chinese) from stu)";
+            resultSet = statement.executeQuery(sql);
+            Object[][] SearchChineseMax = new Object[ 100 ][ 4 ];
+            for (int i = 0; resultSet.next(); i++) {
+                SearchChineseMax[ i ][ 0 ] = resultSet.getInt("id");
+                SearchChineseMax[ i ][ 1 ] = resultSet.getString("name");
+                SearchChineseMax[ i ][ 2 ] = resultSet.getInt("classes");
+                SearchChineseMax[ i ][ 3 ] = resultSet.getDouble("chinese");
+            }
+            return SearchChineseMax;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection, statement, resultSet);
+        }
+        return new Object[ 0 ][];
+    }
+    //按数学最高查询
+    Object[][] SearchMathMax() {
+
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select * from studentmysql.stu where math = (select max(math) from stu)";
+            resultSet = statement.executeQuery(sql);
+            Object[][] SearchMathMax = new Object[ 100 ][ 4 ];
+            for (int i = 0; resultSet.next(); i++) {
+                SearchMathMax[ i ][ 0 ] = resultSet.getInt("id");
+                SearchMathMax[ i ][ 1 ] = resultSet.getString("name");
+                SearchMathMax[ i ][ 2 ] = resultSet.getInt("classes");
+                SearchMathMax[ i ][ 3 ] = resultSet.getDouble("math");
+            }
+            return SearchMathMax;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            jdbcUtils.release(connection, statement, resultSet);
+        }
+        return new Object[ 0 ][];
+    }
+    //按英语最高查询
+    Object[][] SearchEnglishMax() {
+
+        try {
+            connection = jdbcUtils.getConnection();
+            statement = connection.createStatement();
+            String sql = "select * from studentmysql.stu where english = (select max(english) from stu)";
+            resultSet = statement.executeQuery(sql);
+            Object[][] SearchEnglishMax = new Object[ 100 ][ 4 ];
+            for (int i = 0; resultSet.next(); i++) {
+                SearchEnglishMax[ i ][ 0 ] = resultSet.getInt("id");
+                SearchEnglishMax[ i ][ 1 ] = resultSet.getString("name");
+                SearchEnglishMax[ i ][ 2 ] = resultSet.getInt("classes");
+                SearchEnglishMax[ i ][ 3 ] = resultSet.getDouble("english");
+            }
+            return SearchEnglishMax;
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

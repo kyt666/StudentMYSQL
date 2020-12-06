@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 
 public class StudentShow1 {
@@ -31,7 +30,7 @@ public class StudentShow1 {
     private JLabel DNameLabel, DClassLabel, DChineseLabel, DMathLabel, DEnglishLabel;
     private JTextField DtextName, DtextClass, DtextChinese, DtextMath, DtextEnglish;
     //显示学生信息内容的文本框
-    private JTextArea showInsert, showStudent;
+    private JTextArea showInsert, showStudent, showSearch;
     //删除面板内容
     //删除标签
     private JLabel searchLabel3;
@@ -230,7 +229,7 @@ public class StudentShow1 {
                     if ( !util.CheckStu(Integer.parseInt(textDeleteID.getText())) ) {
                         if ( (!(DtextName.getText().equals(""))) && (!DtextClass.getText().equals("")) && !(DtextChinese.getText().equals("")) && !(DtextMath.getText().equals("")) && !(DtextEnglish.getText().equals("")) ) {
                             String name = DtextName.getText();
-                            if ( util.update(Integer.parseInt(textDeleteID.getText()), name, Integer.parseInt(DtextClass.getText()), Double.parseDouble(DtextChinese.getText()), Double.parseDouble(DtextMath.getText()), Double.parseDouble(DtextEnglish.getText()))){
+                            if ( util.update(Integer.parseInt(textDeleteID.getText()), name, Integer.parseInt(DtextClass.getText()), Double.parseDouble(DtextChinese.getText()), Double.parseDouble(DtextMath.getText()), Double.parseDouble(DtextEnglish.getText())) ) {
                                 JOptionPane.showMessageDialog(null, "修改成功!", "提示框", JOptionPane.WARNING_MESSAGE);
                                 //清空修改文本
                                 DtextName.setText("");
@@ -272,55 +271,6 @@ public class StudentShow1 {
 
 
         //查询面板
-        //初始化查询面板的所需对象
-        searchLabel1 = new JLabel("请选择学生信息查询内容：");
-        searchLabel1.setFont(new Font("宋体", Font.BOLD, 16));
-        searchText2 = new JTextField(10);
-        p2.add(searchLabel1);
-        p2.add(searchText2);
-        JComboBox<String> comboBox1 = new JComboBox<>();
-        comboBox1.addItem("按照学号查询");
-        comboBox1.addItem("按照名字查询");
-        comboBox1.addItem("按照班级查询");
-        comboBox1.addItem("按照课程名称查询");
-        comboBox1.addItem("按照语文成绩最高查询");
-        comboBox1.addItem("按照数学成绩最高查询");
-        comboBox1.addItem("按照英语成绩最高查询");
-        JButton button = new JButton("提交");
-
-        button.addActionListener((actionEvent -> {
-
-            //取出下拉列表框选中的数据
-            String conboBoxStr = (String) comboBox1.getSelectedItem();
-            if ( conboBoxStr.equals("按照学号查询") ) {
-                System.out.println("按照学号查询");
-
-
-            }
-
-
-            if ( conboBoxStr.equals("按照名字查询") ) {
-                System.out.println("按照名字查询");
-
-            }
-            if ( conboBoxStr.equals("按照班级查询") ) {
-                System.out.println("按照班级查询");
-            }
-            if ( conboBoxStr.equals("按照课程名称查询") ) {
-                System.out.println("按照课程名称查询");
-            }
-            if ( conboBoxStr.equals("按照语文成绩最高查询") ) {
-                System.out.println("按照语文成绩最高查询");
-            }
-            if ( conboBoxStr.equals("按照数学成绩最高查询") ) {
-                System.out.println("按照数学成绩最高查询");
-            }
-            if ( conboBoxStr.equals("按照英语成绩最高查询") ) {
-                System.out.println("按照英语成绩最高查询");
-            }
-
-        }));
-
         //searchButton = new JButton("确认查询");
         //searchButton.setFont(new Font("宋体",Font.BOLD,16));
         //searchText1 = new JTextField(8);
@@ -332,11 +282,130 @@ public class StudentShow1 {
         //c3.setLayout(new FlowLayout());
         // c3.setLayout(new FlowLayout(FlowLayout.LEFT));
         // c3.add(searchLabel1);
+
+
+        //初始化查询面板的所需对象
+        searchLabel1 = new JLabel("请选择学生信息查询内容：");
+        searchLabel1.setFont(new Font("宋体", Font.BOLD, 16));
+        searchText2 = new JTextField(10);
+        p2.add(searchLabel1);
+        p2.add(searchText2);
+        JComboBox<String> comboBox1 = new JComboBox<>();
+        comboBox1.addItem("按照学号查询");
+        comboBox1.addItem("按照名字查询");
+        comboBox1.addItem("按照班级查询");
+        comboBox1.addItem("按照语文成绩最高查询");
+        comboBox1.addItem("按照数学成绩最高查询");
+        comboBox1.addItem("按照英语成绩最高查询");
+        JButton button = new JButton("确认查询");
         p2.add(comboBox1);
         p2.add(button);
         p2.add(c4, FlowLayout.LEFT);
         // p2.add(resultText);
         //searchButton.addActionListener(l);
+        showSearch = new JTextArea(20, 65);
+        JScrollPane jp2 = new JScrollPane(showSearch);
+        p2.add(jp2);
+        showSearch.setEditable(false);
+
+
+        button.addActionListener((actionEvent -> {
+
+            //取出下拉列表框选中的数据
+            String conboBoxStr = (String) comboBox1.getSelectedItem();
+            if ( conboBoxStr.equals("按照学号查询") ) {
+                if ( !searchText2.getText().equals("") ) {
+                    Object[][] Searchid = util.SearchId(Integer.parseInt(searchText2.getText()));
+                    if ( Searchid[ 0 ][ 0 ] != null ) {
+                        showSearch.setText("");
+                        showSearch.append("学号\t姓名\t班级\t语文\t数学\t英语\t总成绩\t平均成绩\n");
+                        for (int i = 0; i < Searchid.length; i++) {
+                            if ( Searchid[ i ][ 0 ] != null )
+                                showSearch.append(Searchid[ i ][ 0 ] + "\t" + Searchid[ i ][ 1 ] + "\t" + Searchid[ i ][ 2 ] + "\t" + Searchid[ i ][ 3 ] + "\t" + Searchid[ i ][ 4 ] + "\t" + Searchid[ i ][ 5 ] + "\t" + Searchid[ i ][ 6 ] + "\t" + Searchid[ i ][ 7 ] + "\n");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "啊哦!找不到！", "提示框", JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {
+
+                    JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+
+            if ( conboBoxStr.equals("按照名字查询") ) {
+                if ( !searchText2.getText().equals("") ) {
+                    if ( util.SearchName(String.valueOf(searchText2.getText())) != null ) {
+                        Object[][] Searchname = util.SearchName(String.valueOf(searchText2.getText()));
+                        if ( Searchname[ 0 ][ 0 ] != null ) {
+                            showSearch.setText("");
+                            showSearch.append("学号\t姓名\t班级\t语文\t数学\t英语\t总成绩\t平均成绩\n");
+                            for (int i = 0; i < Searchname.length; i++) {
+                                if ( Searchname[ i ][ 0 ] != null )
+                                    showSearch.append(Searchname[ i ][ 0 ] + "\t" + Searchname[ i ][ 1 ] + "\t" + Searchname[ i ][ 2 ] + "\t" + Searchname[ i ][ 3 ] + "\t" + Searchname[ i ][ 4 ] + "\t" + Searchname[ i ][ 5 ] + "\t" + Searchname[ i ][ 6 ] + "\t" + Searchname[ i ][ 7 ] + "\n");
+                            }
+
+                        } else {
+                            JOptionPane.showMessageDialog(null, "啊哦!找不到！", "提示框", JOptionPane.WARNING_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+            if ( conboBoxStr.equals("按照班级查询") ) {
+                if ( !searchText2.getText().equals("") ) {
+                    if ( util.SearchName(String.valueOf(searchText2.getText())) != null ) {
+                        Object[][] SearchClass = util.SearchClass(Integer.parseInt(searchText2.getText()));
+                        if ( SearchClass[ 0 ][ 0 ] != null ) {
+                            showSearch.setText("");
+                            showSearch.append("学号\t姓名\t班级\t语文\t数学\t英语\t总成绩\t平均成绩\n");
+                            for (int i = 0; i < SearchClass.length; i++) {
+                                if ( SearchClass[ i ][ 0 ] != null )
+                                    showSearch.append(SearchClass[ i ][ 0 ] + "\t" + SearchClass[ i ][ 1 ] + "\t" + SearchClass[ i ][ 2 ] + "\t" + SearchClass[ i ][ 3 ] + "\t" + SearchClass[ i ][ 4 ] + "\t" + SearchClass[ i ][ 5 ] + "\t" + SearchClass[ i ][ 6 ] + "\t" + SearchClass[ i ][ 7 ] + "\n");
+                            }
+
+                        } else {
+                            JOptionPane.showMessageDialog(null, "啊哦!找不到！", "提示框", JOptionPane.WARNING_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "不能为空!", "提示框", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+
+
+            if ( conboBoxStr.equals("按照语文成绩最高查询") ) {
+
+                Object[][] SearchChineseMax = util.SearchChineseMax();
+                showSearch.setText("");
+                showSearch.append("学号\t\t姓名\t\t班级\t\t语文最高\n");
+                for (int i = 0; i < SearchChineseMax.length; i++) {
+                    if ( SearchChineseMax[ i ][ 0 ] != null )
+                        showSearch.append(SearchChineseMax[ i ][ 0 ] + "\t\t" + SearchChineseMax[ i ][ 1 ] + "\t\t" + SearchChineseMax[ i ][ 2 ] + "\t\t" + SearchChineseMax[ i ][ 3 ] + "\t\t" + "\n");
+                }
+            }
+
+            if ( conboBoxStr.equals("按照数学成绩最高查询") ) {
+                Object[][] SearchMathMax = util.SearchMathMax();
+                showSearch.setText("");
+                showSearch.append("学号\t\t姓名\t\t班级\t\t数学最高\n");
+                for (int i = 0; i < SearchMathMax.length; i++) {
+                    if ( SearchMathMax[ i ][ 0 ] != null )
+                        showSearch.append(SearchMathMax[ i ][ 0 ] + "\t\t" + SearchMathMax[ i ][ 1 ] + "\t\t" + SearchMathMax[ i ][ 2 ] + "\t\t" + SearchMathMax[ i ][ 3 ] + "\t\t" + "\n");
+                }
+            }
+            if ( conboBoxStr.equals("按照英语成绩最高查询") ) {
+                Object[][] SearchEnglishMax = util.SearchEnglishMax();
+                showSearch.setText("");
+                showSearch.append("学号\t\t姓名\t\t班级\t\t英语最高\n");
+                for (int i = 0; i < SearchEnglishMax.length; i++) {
+                    if ( SearchEnglishMax[ i ][ 0 ] != null )
+                        showSearch.append(SearchEnglishMax[ i ][ 0 ] + "\t\t" + SearchEnglishMax[ i ][ 1 ] + "\t\t" + SearchEnglishMax[ i ][ 2 ] + "\t\t" + SearchEnglishMax[ i ][ 3 ] + "\t\t" + "\n");
+                }
+            }
+
+
+        }));
 
 
         //排序面板
@@ -359,6 +428,7 @@ public class StudentShow1 {
         //Id排序展示
         //显示文本框
         showStudent = new JTextArea(20, 65);
+        //设置展示文本不可编辑
         showStudent.setEditable(false);
         p4.add(showStudent);
         JScrollPane jp1 = new JScrollPane(showStudent);
@@ -456,12 +526,7 @@ public class StudentShow1 {
 
 
                 resultA.setText("");
-                Object[][] objectYouxiuC = new Object[ 0 ][];
-                try {
-                    objectYouxiuC = util.YouxiuC();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                Object[][] objectYouxiuC = util.YouxiuC();
                 resultA.setEditable(false);
                 for (int i = 0; i < objectYouxiuC.length; i++) {
                     resultA.append(objectYouxiuC[ i ][ 0 ] + "班的" + "语文优秀率：" + objectYouxiuC[ i ][ 1 ] + "\r\n");
